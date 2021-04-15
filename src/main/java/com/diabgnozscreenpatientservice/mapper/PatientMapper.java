@@ -8,7 +8,7 @@ import com.diabgnozscreenpatientservice.dto.PatientDto;
 import com.diabgnozscreenpatientservice.entity.PatientEntity;
 import com.diabgnozscreenpatientservice.model.Patient;
 
-@Mapper
+@Mapper(componentModel = "spring")
 public interface PatientMapper {
 
 	Patient patientEntityToPatient (PatientEntity patientEntity);

@@ -4,6 +4,8 @@ import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import com.diabgnozscreenpatientservice.entity.PatientEntity;
@@ -19,11 +21,12 @@ public class PatientDao {
 	private PatientRepository patientRepository;
 	
 	@Autowired
-	private PatientMapper patientMapper ;
+	private PatientMapper patientMapper;
 	
-	public List<Patient> getAllPatientsList(){
-		return patientMapper.patientEntitiesListToPatientsList
-				(patientRepository.findAll());
+	public Page<Patient> getAllPatientsList(Pageable pageable){
+		Page<PatientEntity> allPatientEntitiesPage = patientRepository.findAll(pageable);
+		Page<Patient> allPatientsPage = allPatientEntitiesPage.map(p->patientMapper.patientEntityToPatient(p));
+		return allPatientsPage;
 	}
 	
 	public Patient getOnePatient(Long patientId) throws PatientNotFoundException {
