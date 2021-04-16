@@ -1,5 +1,5 @@
 package com.diabgnozscreenpatientservice.utility;
 
-public enum PatientSex {
+public enum PatientGender {
 	MALE,FEMALE
 }

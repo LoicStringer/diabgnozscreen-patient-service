@@ -12,7 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 
-import com.diabgnozscreenpatientservice.utility.PatientSex;
+import com.diabgnozscreenpatientservice.utility.PatientGender;
 
 @Entity
 @Table(name="patient")
@@ -37,8 +37,8 @@ public class PatientEntity {
 	
 	@NotBlank
 	@Enumerated(EnumType.STRING)
-	@Column(name="patient_sex",nullable=false)
-	private PatientSex patientSex;
+	@Column(name="patient_gender",nullable=false)
+	private PatientGender patientGender;
 	
 	@Column(name="patient_address")
 	private String patientAddress;
@@ -53,14 +53,14 @@ public class PatientEntity {
 	}
 
 	public PatientEntity(Long patientId, @NotBlank String patientLastName, @NotBlank String patientFirstName,
-			@NotBlank LocalDate patientBirthDate, @NotBlank PatientSex patientSex, String patientAddress,
+			@NotBlank LocalDate patientBirthDate, @NotBlank PatientGender patientGender, String patientAddress,
 			String patientPhoneNumber, String patientEmail) {
 		super();
 		this.patientId = patientId;
 		this.patientLastName = patientLastName;
 		this.patientFirstName = patientFirstName;
 		this.patientBirthDate = patientBirthDate;
-		this.patientSex = patientSex;
+		this.patientGender = patientGender;
 		this.patientAddress = patientAddress;
 		this.patientPhoneNumber = patientPhoneNumber;
 		this.patientEmail = patientEmail;
@@ -98,12 +98,12 @@ public class PatientEntity {
 		this.patientBirthDate = patientBirthDate;
 	}
 
-	public PatientSex getPatientSex() {
-		return patientSex;
+	public PatientGender getpatientGender() {
+		return patientGender;
 	}
 
-	public void setPatientSex(PatientSex patientSex) {
-		this.patientSex = patientSex;
+	public void setpatientGender(PatientGender patientGender) {
+		this.patientGender = patientGender;
 	}
 
 	public String getPatientAddress() {
@@ -141,7 +141,7 @@ public class PatientEntity {
 		result = prime * result + ((patientId == null) ? 0 : patientId.hashCode());
 		result = prime * result + ((patientLastName == null) ? 0 : patientLastName.hashCode());
 		result = prime * result + ((patientPhoneNumber == null) ? 0 : patientPhoneNumber.hashCode());
-		result = prime * result + ((patientSex == null) ? 0 : patientSex.hashCode());
+		result = prime * result + ((patientGender == null) ? 0 : patientGender.hashCode());
 		return result;
 	}
 
@@ -189,7 +189,7 @@ public class PatientEntity {
 				return false;
 		} else if (!patientPhoneNumber.equals(other.patientPhoneNumber))
 			return false;
-		if (patientSex != other.patientSex)
+		if (patientGender != other.patientGender)
 			return false;
 		return true;
 	}

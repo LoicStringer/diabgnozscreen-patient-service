@@ -4,7 +4,7 @@ import java.time.LocalDate;
 
 import org.springframework.stereotype.Component;
 
-import com.diabgnozscreenpatientservice.utility.PatientSex;
+import com.diabgnozscreenpatientservice.utility.PatientGender;
 
 @Component
 public class PatientDto {
@@ -13,7 +13,7 @@ public class PatientDto {
 	private String patientLastName;
 	private String patientFirstName;
 	private LocalDate patientBirthDate;
-	private PatientSex patientSex;
+	private PatientGender patientGender;
 	private String patientAddress;
 	private String patientPhoneNumber;
 	private String patientEmail;
@@ -22,13 +22,13 @@ public class PatientDto {
 	}
 
 	public PatientDto(Long patientId, String patientLastName, String patientFirstName, LocalDate patientBirthDate,
-			PatientSex patientSex, String patientAddress, String patientPhoneNumber, String patientEmail) {
+			PatientGender patientGender, String patientAddress, String patientPhoneNumber, String patientEmail) {
 		super();
 		this.patientId = patientId;
 		this.patientLastName = patientLastName;
 		this.patientFirstName = patientFirstName;
 		this.patientBirthDate = patientBirthDate;
-		this.patientSex = patientSex;
+		this.patientGender = patientGender;
 		this.patientAddress = patientAddress;
 		this.patientPhoneNumber = patientPhoneNumber;
 		this.patientEmail = patientEmail;
@@ -66,12 +66,12 @@ public class PatientDto {
 		this.patientBirthDate = patientBirthDate;
 	}
 
-	public PatientSex getPatientSex() {
-		return patientSex;
+	public PatientGender getpatientGender() {
+		return patientGender;
 	}
 
-	public void setPatientSex(PatientSex patientSex) {
-		this.patientSex = patientSex;
+	public void setpatientGender(PatientGender patientGender) {
+		this.patientGender = patientGender;
 	}
 
 	public String getPatientAddress() {
@@ -109,7 +109,7 @@ public class PatientDto {
 		result = prime * result + ((patientId == null) ? 0 : patientId.hashCode());
 		result = prime * result + ((patientLastName == null) ? 0 : patientLastName.hashCode());
 		result = prime * result + ((patientPhoneNumber == null) ? 0 : patientPhoneNumber.hashCode());
-		result = prime * result + ((patientSex == null) ? 0 : patientSex.hashCode());
+		result = prime * result + ((patientGender == null) ? 0 : patientGender.hashCode());
 		return result;
 	}
 
@@ -157,7 +157,7 @@ public class PatientDto {
 				return false;
 		} else if (!patientPhoneNumber.equals(other.patientPhoneNumber))
 			return false;
-		if (patientSex != other.patientSex)
+		if (patientGender != other.patientGender)
 			return false;
 		return true;
 	}
