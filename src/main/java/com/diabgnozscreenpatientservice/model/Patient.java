@@ -2,8 +2,11 @@ package com.diabgnozscreenpatientservice.model;
 
 import java.time.LocalDate;
 
+import org.springframework.stereotype.Component;
+
 import com.diabgnozscreenpatientservice.utility.PatientSex;
 
+@Component
 public class Patient {
 
 	private Long patientId;

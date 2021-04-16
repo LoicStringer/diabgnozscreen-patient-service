@@ -19,6 +19,16 @@ public class ExceptionsHandlerCenter  extends ResponseEntityExceptionHandler{
 		return new ResponseEntity<ExceptionResponse>(exceptionResponse, getHttpStatusFromException(ex));
 	}
 	
+	@ExceptionHandler(Exception.class)
+	public ResponseEntity<ExceptionResponse> handleException(Exception ex) {
+
+		ExceptionResponse exceptionResponse =  new ExceptionResponse(LocalDateTime.now(), HttpStatus.INTERNAL_SERVER_ERROR.toString(),
+				ex.getCause().toString(), ex.getMessage());
+		
+		return new ResponseEntity<ExceptionResponse>(exceptionResponse, getHttpStatusFromException(ex));
+	}
+	
+	
 	private ExceptionResponse exceptionResponseBuild(Exception ex) {
 		String statusCode = getStatusCodeFromException(ex);
 		ExceptionResponse exceptionResponse = new ExceptionResponse(LocalDateTime.now(), statusCode,
