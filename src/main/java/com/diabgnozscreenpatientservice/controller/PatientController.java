@@ -2,22 +2,30 @@ package com.diabgnozscreenpatientservice.controller;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.diabgnozscreenpatientservice.dto.PatientDto;
+import com.diabgnozscreenpatientservice.exception.PatientIdCoherenceException;
 import com.diabgnozscreenpatientservice.exception.PatientNotFoundException;
 import com.diabgnozscreenpatientservice.mapper.PatientMapper;
+import com.diabgnozscreenpatientservice.model.Patient;
 import com.diabgnozscreenpatientservice.service.PatientService;
 
 @RestController
 @RequestMapping("/diabgnoz/patients")
+@CrossOrigin(origins = "http://localhost:4200")
 public class PatientController {
 	
 	@Autowired
@@ -38,6 +46,13 @@ public class PatientController {
 		PatientDto patientToFetch = 
 				patientMapper.patientToPatientDto(patientService.getOnePatient(patientId));
 		return ResponseEntity.ok(patientToFetch);
+	}
+	
+	@PutMapping("/{patientId}")
+	public ResponseEntity<PatientDto> updatePatient(@PathVariable Long patientId, @Valid @RequestBody PatientDto updatedPatient) throws PatientNotFoundException, PatientIdCoherenceException{
+		Patient patientToUpdate = patientMapper.patientDtoToPatient(updatedPatient);
+		patientService.updatePatient(patientId, patientToUpdate);
+		return ResponseEntity.ok(updatedPatient);
 	}
 	
 	@GetMapping("/names/{patientLastName}")

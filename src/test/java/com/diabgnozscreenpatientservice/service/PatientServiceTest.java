@@ -23,6 +23,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
 import com.diabgnozscreenpatientservice.dao.PatientDao;
+import com.diabgnozscreenpatientservice.exception.PatientIdCoherenceException;
 import com.diabgnozscreenpatientservice.exception.PatientNotFoundException;
 import com.diabgnozscreenpatientservice.model.Patient;
 
@@ -74,6 +75,12 @@ class PatientServiceTest {
 		}
 
 		@Test
+		void updatePatientTest() throws PatientNotFoundException, PatientIdCoherenceException {
+			when(patientDao.updatePatient(any(Long.class), any(Patient.class))).thenReturn(testedPatient);
+			assertEquals("Smith", patientService.updatePatient(1L, testedPatient).getPatientLastName());
+		}
+
+		@Test
 		void getPatientsByNameListTest() {
 			when(patientDao.getPatientsByNameList(any(String.class))).thenReturn(homonymousPatientsList);
 			assertEquals(2, patientService.getPatientsByNameList("Johnson").size());
@@ -84,15 +91,20 @@ class PatientServiceTest {
 	@Tag("ExceptionsTests")
 	@DisplayName("Exceptions Checking")
 	class ExceptionsTests {
-		
+
 		@Test
 		void isexpectedExceptionThrownWhenPatientIsNotFoundTest() throws PatientNotFoundException {
 			when(patientDao.getOnePatient(any(Long.class))).thenThrow(PatientNotFoundException.class);
-			assertThrows(PatientNotFoundException.class, ()-> patientService.getOnePatient(1L));
+			assertThrows(PatientNotFoundException.class, () -> patientService.getOnePatient(1L));
+		}
+		
+		@Test
+		void isExpectedExceptionThrownWhenPatientIdIsNotCoherentTest() throws PatientNotFoundException, PatientIdCoherenceException {
+			when(patientDao.updatePatient(any(Long.class), any(Patient.class))).thenThrow(PatientIdCoherenceException.class);
+			assertThrows(PatientIdCoherenceException.class, ()-> patientService.updatePatient(2L, testedPatient));
 		}
 	}
-	
-	
+
 	private static void initTestBeans() {
 		testedPatient = new Patient();
 		testedPatientTwo = new Patient();

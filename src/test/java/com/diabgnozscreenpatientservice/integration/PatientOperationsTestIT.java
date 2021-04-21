@@ -3,6 +3,7 @@ package com.diabgnozscreenpatientservice.integration;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -10,24 +11,36 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.diabgnozscreenpatientservice.controller.PatientController;
+import com.diabgnozscreenpatientservice.dto.PatientDto;
+import com.diabgnozscreenpatientservice.exception.PatientIdCoherenceException;
 import com.diabgnozscreenpatientservice.exception.PatientNotFoundException;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
-class PatientControllerTestIT {
+class PatientOperationsTestIT {
 
 	@Autowired
 	private MockMvc mockMvc;
+	
+	@Autowired
+	private ObjectMapper objectMapper;
+	
+	@Autowired
+	private PatientController patientController;
 	
 	@Test
 	void getAllPatientsPageTest() throws Exception {
 		mockMvc.perform(get("/diabgnoz/patients"))
 				.andExpect(status().isOk())
-				.andExpect(jsonPath("$.content.length()").value(4))
+				.andExpect(jsonPath("$.content.length()").value(5))
 				.andExpect(jsonPath("$.content.[0].patientLastName").value("Jordan"));	
 	}
 	
@@ -37,6 +50,22 @@ class PatientControllerTestIT {
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$.patientLastName").value("Tyson"));
 	}
+	
+	@Test
+	void updatePatientTest() throws JsonProcessingException, Exception {
+		
+		PatientDto updatedPatient = patientController.getOnePatient(5L).getBody();
+		updatedPatient.setPatientFirstName("Robert");
+		
+		mockMvc.perform(put("/diabgnoz/patients/5")
+				.content(objectMapper.writeValueAsString(updatedPatient))
+				.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.patientFirstName").value("Robert"));
+		
+		assertEquals("Robert", patientController.getOnePatient(5L).getBody().getPatientFirstName());
+	}
+	
 	
 	@Test
 	void getPatientsByNameListTest() throws Exception {
@@ -49,9 +78,19 @@ class PatientControllerTestIT {
 	void isExpectedExceptionAndStatusThrownWhenPatientNotFoundTest() throws Exception {
 		mockMvc.perform(get("/diabgnoz/patients/10"))
 		.andExpect(status().isNotFound())
-		.andExpect(result -> assertTrue(result.getResolvedException() instanceof PatientNotFoundException))
-		.andExpect(result -> assertEquals("This patient is not registered.", result.getResolvedException().getMessage()));
+		.andExpect(result -> assertTrue(result.getResolvedException() instanceof PatientNotFoundException));
 	}
 	
+	@Test
+	void isExpectedExceptionThrownWhenPatientIdIsNotCoherent() throws JsonProcessingException, Exception {
+		
+		PatientDto updatedPatient = patientController.getOnePatient(5L).getBody();
+		
+		mockMvc.perform(put("/diabgnoz/patients/4")
+				.content(objectMapper.writeValueAsString(updatedPatient))
+				.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(result-> assertTrue(result.getResolvedException() instanceof PatientIdCoherenceException));
+		
+	}
 	
 }

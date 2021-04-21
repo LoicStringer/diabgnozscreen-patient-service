@@ -11,6 +11,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 import com.diabgnozscreenpatientservice.utility.PatientGender;
 
@@ -31,13 +32,13 @@ public class PatientEntity {
 	@Column(name="patient_firstname",length=50,nullable=false)
 	private String patientFirstName;
 	
-	@NotBlank
+	@NotNull
 	@Column(name="patient_birthdate",nullable=false)
 	private LocalDate patientBirthDate;
 	
-	@NotBlank
+	@NotNull
 	@Enumerated(EnumType.STRING)
-	@Column(name="patient_gender",nullable=false)
+	@Column(name="patient_gender",length=1,nullable=false)
 	private PatientGender patientGender;
 	
 	@Column(name="patient_address")

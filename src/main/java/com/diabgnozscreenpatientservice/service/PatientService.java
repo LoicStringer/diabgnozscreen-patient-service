@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.diabgnozscreenpatientservice.dao.PatientDao;
+import com.diabgnozscreenpatientservice.exception.PatientIdCoherenceException;
 import com.diabgnozscreenpatientservice.exception.PatientNotFoundException;
 import com.diabgnozscreenpatientservice.model.Patient;
 
@@ -24,6 +25,10 @@ public class PatientService {
 
 	public Patient getOnePatient(Long patientId) throws PatientNotFoundException {
 		return patientDao.getOnePatient(patientId);
+	}
+	
+	public Patient updatePatient(Long patientId, Patient updatedPatient) throws PatientNotFoundException, PatientIdCoherenceException {
+		return patientDao.updatePatient(patientId,updatedPatient);
 	}
 	
 	public List<Patient> getPatientsByNameList (String patientLastName){

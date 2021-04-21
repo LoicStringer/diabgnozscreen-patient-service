@@ -24,6 +24,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 
 import com.diabgnozscreenpatientservice.dto.PatientDto;
+import com.diabgnozscreenpatientservice.exception.PatientIdCoherenceException;
 import com.diabgnozscreenpatientservice.exception.PatientNotFoundException;
 import com.diabgnozscreenpatientservice.mapper.PatientMapper;
 import com.diabgnozscreenpatientservice.model.Patient;
@@ -92,6 +93,13 @@ public class PatientControllerTest {
 			assertEquals(ResponseEntity.ok(testedPatientDto),patientController.getOnePatient(1L));
 		}
 		
+		@Test 
+		void updatePatient() throws PatientNotFoundException, PatientIdCoherenceException {
+			when(patientService.updatePatient(any(Long.class), any(Patient.class))).thenReturn(testedPatient);
+			when(patientMapper.patientDtoToPatient(testedPatientDto)).thenReturn(testedPatient);
+			assertEquals(ResponseEntity.ok(testedPatientDto),patientController.updatePatient(1L, testedPatientDto));
+		}
+		
 		@Test
 		void getPatientsByNameListTest() {
 			when(patientService.getPatientsByNameList(any(String.class))).thenReturn(homonymousPatientsList);
@@ -109,6 +117,13 @@ public class PatientControllerTest {
 		void isExpectedExceptionThrownWhenPatientNotFoundTest() throws PatientNotFoundException {
 			when(patientService.getOnePatient(any(Long.class))).thenThrow(PatientNotFoundException.class);
 			assertThrows(PatientNotFoundException.class, ()->patientController.getOnePatient(1L));
+		}
+		
+		@Test
+		void isExpectedExceptionThrownWHenPatientIdIsNotCoherentTest() throws PatientNotFoundException, PatientIdCoherenceException {
+			when(patientService.updatePatient(2L, testedPatient)).thenThrow(PatientIdCoherenceException.class);
+			when(patientMapper.patientDtoToPatient(testedPatientDto)).thenReturn(testedPatient);
+			assertThrows(PatientIdCoherenceException.class, ()->patientController.updatePatient(2L, testedPatientDto));
 		}
 	}
 
