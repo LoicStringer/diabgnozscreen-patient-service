@@ -13,7 +13,7 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
-import com.diabgnozscreenpatientservice.utility.PatientGender;
+import com.diabgnozscreenpatientservice.utility.PatientGenderEnum;
 
 @Entity
 @Table(name="patient")
@@ -39,7 +39,7 @@ public class PatientEntity {
 	@NotNull
 	@Enumerated(EnumType.STRING)
 	@Column(name="patient_gender",length=1,nullable=false)
-	private PatientGender patientGender;
+	private PatientGenderEnum patientGender;
 	
 	@Column(name="patient_address")
 	private String patientAddress;
@@ -54,7 +54,7 @@ public class PatientEntity {
 	}
 
 	public PatientEntity(Long patientId, @NotBlank String patientLastName, @NotBlank String patientFirstName,
-			@NotBlank LocalDate patientBirthDate, @NotBlank PatientGender patientGender, String patientAddress,
+			@NotBlank LocalDate patientBirthDate, @NotBlank PatientGenderEnum patientGender, String patientAddress,
 			String patientPhoneNumber, String patientEmail) {
 		super();
 		this.patientId = patientId;
@@ -99,11 +99,11 @@ public class PatientEntity {
 		this.patientBirthDate = patientBirthDate;
 	}
 
-	public PatientGender getpatientGender() {
+	public PatientGenderEnum getpatientGender() {
 		return patientGender;
 	}
 
-	public void setpatientGender(PatientGender patientGender) {
+	public void setpatientGender(PatientGenderEnum patientGender) {
 		this.patientGender = patientGender;
 	}
 

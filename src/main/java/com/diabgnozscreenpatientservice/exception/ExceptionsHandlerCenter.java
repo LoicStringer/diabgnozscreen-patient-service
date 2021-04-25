@@ -21,7 +21,7 @@ public class ExceptionsHandlerCenter  extends ResponseEntityExceptionHandler{
 	}
 	
 	@ExceptionHandler(PatientNotFoundException.class)
-	public ResponseEntity<ExceptionResponse> handleNotAllowedIdSettingException(PatientNotFoundException ex) {
+	public ResponseEntity<ExceptionResponse> handlePatientNotFoundException(PatientNotFoundException ex) {
 		ExceptionResponse exceptionResponse = exceptionResponseBuild(ex);
 		return new ResponseEntity<ExceptionResponse>(exceptionResponse, getHttpStatusFromException(ex));
 	}
@@ -45,7 +45,7 @@ public class ExceptionsHandlerCenter  extends ResponseEntityExceptionHandler{
 		return status.toString();
 	}
 	
-	private String getReasonFromResponseStatus(Exception ex) {
+	private String getReasonFromExceptionResponseStatus(Exception ex) {
 		ResponseStatus responseStatus = AnnotationUtils.findAnnotation(ex.getClass(), ResponseStatus.class);
 		return responseStatus.reason();
 	}

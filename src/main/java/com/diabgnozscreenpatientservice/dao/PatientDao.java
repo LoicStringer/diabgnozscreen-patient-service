@@ -14,7 +14,7 @@ import com.diabgnozscreenpatientservice.exception.PatientNotFoundException;
 import com.diabgnozscreenpatientservice.mapper.PatientMapper;
 import com.diabgnozscreenpatientservice.model.Patient;
 import com.diabgnozscreenpatientservice.repository.PatientRepository;
-import com.diabgnozscreenpatientservice.utility.PatientIdChecker;
+
 
 @Repository
 public class PatientDao {
@@ -25,9 +25,7 @@ public class PatientDao {
 	@Autowired
 	private PatientMapper patientMapper;
 	
-	@Autowired
-	private PatientIdChecker patientIdChecker;
-
+	
 	public Page<Patient> getAllPatientsList(Pageable pageable) {
 		Page<PatientEntity> allPatientEntitiesPage = patientRepository.findAll(pageable);
 		Page<Patient> allPatientsPage = allPatientEntitiesPage.map(p -> patientMapper.patientEntityToPatient(p));
@@ -35,14 +33,18 @@ public class PatientDao {
 	}
 
 	public Patient getOnePatient(Long patientId) throws PatientNotFoundException {
-		patientIdChecker.checkPatientId(patientId);
+		checkPatientId(patientId);
 		PatientEntity patientEntityToGet = patientRepository.findById(patientId).get();
 		return (patientMapper.patientEntityToPatient(patientEntityToGet));
 	}
 
+	public Patient addPatient(Patient patientToAdd) {
+		patientRepository.save(patientMapper.patientToPatientEntity(patientToAdd));
+		return patientToAdd;
+	}
+	
 	public Patient updatePatient(Long patientId, Patient updatedPatient) throws PatientNotFoundException, PatientIdCoherenceException {
-		patientIdChecker.checkPatientId(patientId);
-		patientIdChecker.checkPatientIdCoherence(patientId, updatedPatient.getPatientId());
+		checkPatientId(patientId);
 		patientRepository.save(patientMapper.patientToPatientEntity(updatedPatient));
 		return updatedPatient;
 	}
@@ -56,5 +58,12 @@ public class PatientDao {
 		return patientMapper
 				.patientEntitiesListToPatientsList(patientRepository.findByPatientBirthDate(patientBirthDate));
 	}
+
+	private void checkPatientId(Long patientId) throws PatientNotFoundException{
+		if(!patientRepository.existsById(patientId)) {
+			throw new PatientNotFoundException("Patient not registered");
+		}
+	}
+	
 
 }

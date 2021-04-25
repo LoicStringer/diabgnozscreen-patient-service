@@ -75,6 +75,12 @@ class PatientServiceTest {
 		}
 
 		@Test
+		void addPatientTest() {
+			when(patientDao.addPatient(testedPatient)).thenReturn(testedPatient);
+			assertEquals("Smith", patientService.addPatient(testedPatient).getPatientLastName());
+		}
+		
+		@Test
 		void updatePatientTest() throws PatientNotFoundException, PatientIdCoherenceException {
 			when(patientDao.updatePatient(any(Long.class), any(Patient.class))).thenReturn(testedPatient);
 			assertEquals("Smith", patientService.updatePatient(1L, testedPatient).getPatientLastName());

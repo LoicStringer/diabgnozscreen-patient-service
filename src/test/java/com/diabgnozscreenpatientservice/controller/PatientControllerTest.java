@@ -93,6 +93,13 @@ public class PatientControllerTest {
 			assertEquals(ResponseEntity.ok(testedPatientDto),patientController.getOnePatient(1L));
 		}
 		
+		@Test
+		void addPatientTest() {
+			when(patientService.addPatient(testedPatient)).thenReturn(testedPatient);
+			when(patientMapper.patientDtoToPatient(testedPatientDto)).thenReturn(testedPatient);
+			assertEquals(ResponseEntity.ok(testedPatientDto),patientController.addPatient(testedPatientDto));
+		}
+		
 		@Test 
 		void updatePatient() throws PatientNotFoundException, PatientIdCoherenceException {
 			when(patientService.updatePatient(any(Long.class), any(Patient.class))).thenReturn(testedPatient);

@@ -3,9 +3,12 @@ package com.diabgnozscreenpatientservice.integration;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.time.LocalDate;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +22,7 @@ import com.diabgnozscreenpatientservice.controller.PatientController;
 import com.diabgnozscreenpatientservice.dto.PatientDto;
 import com.diabgnozscreenpatientservice.exception.PatientIdCoherenceException;
 import com.diabgnozscreenpatientservice.exception.PatientNotFoundException;
+import com.diabgnozscreenpatientservice.utility.PatientGenderEnum;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -50,6 +54,26 @@ class PatientOperationsTestIT {
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$.patientLastName").value("Tyson"));
 	}
+	
+	@Test
+	void addpatientTest() throws JsonProcessingException, Exception {
+		LocalDate birthDate = LocalDate.of(1981,8,8);
+		PatientDto patientToAdd = new PatientDto();
+		patientToAdd.setPatientId(6L);
+		patientToAdd.setPatientLastName("Federer");
+		patientToAdd.setPatientFirstName("Roger");
+		patientToAdd.setPatientBirthDate(birthDate);
+		patientToAdd.setpatientGender(PatientGenderEnum.M);
+		
+		mockMvc.perform(post("/diabgnoz/patients")
+				.content(objectMapper.writeValueAsString(patientToAdd))
+				.contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.patientLastName").value("Federer"));
+		
+		assertEquals("Federer", patientController.getOnePatient(6L).getBody().getPatientLastName());
+	}
+	
 	
 	@Test
 	void updatePatientTest() throws JsonProcessingException, Exception {
@@ -90,7 +114,6 @@ class PatientOperationsTestIT {
 				.content(objectMapper.writeValueAsString(updatedPatient))
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(result-> assertTrue(result.getResolvedException() instanceof PatientIdCoherenceException));
-		
 	}
 	
 }

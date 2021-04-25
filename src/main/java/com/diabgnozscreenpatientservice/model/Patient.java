@@ -4,7 +4,7 @@ import java.time.LocalDate;
 
 import org.springframework.stereotype.Component;
 
-import com.diabgnozscreenpatientservice.utility.PatientGender;
+import com.diabgnozscreenpatientservice.utility.PatientGenderEnum;
 
 @Component
 public class Patient {
@@ -13,7 +13,7 @@ public class Patient {
 	private String patientLastName;
 	private String patientFirstName;
 	private LocalDate patientBirthDate;
-	private PatientGender patientGender;
+	private PatientGenderEnum patientGender;
 	private String patientAddress;
 	private String patientPhoneNumber;
 	private String patientEmail;
@@ -22,7 +22,7 @@ public class Patient {
 	}
 
 	public Patient(Long patientId, String patientLastName, String patientFirstName, LocalDate patientBirthDate,
-			PatientGender patientGender, String patientAddress, String patientPhoneNumber, String patientEmail) {
+			PatientGenderEnum patientGender, String patientAddress, String patientPhoneNumber, String patientEmail) {
 		super();
 		this.patientId = patientId;
 		this.patientLastName = patientLastName;
@@ -66,11 +66,11 @@ public class Patient {
 		this.patientBirthDate = patientBirthDate;
 	}
 
-	public PatientGender getpatientGender() {
+	public PatientGenderEnum getpatientGender() {
 		return patientGender;
 	}
 
-	public void setpatientGender(PatientGender patientGender) {
+	public void setpatientGender(PatientGenderEnum patientGender) {
 		this.patientGender = patientGender;
 	}
 

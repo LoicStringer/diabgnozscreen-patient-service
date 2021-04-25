@@ -27,6 +27,11 @@ public class PatientService {
 		return patientDao.getOnePatient(patientId);
 	}
 	
+	public Patient addPatient(Patient patientToAdd) {
+		return patientDao.addPatient(patientToAdd);
+		
+	}
+	
 	public Patient updatePatient(Long patientId, Patient updatedPatient) throws PatientNotFoundException, PatientIdCoherenceException {
 		return patientDao.updatePatient(patientId,updatedPatient);
 	}
@@ -38,4 +43,6 @@ public class PatientService {
 	public List<Patient> getPatientsByBirthDateList(LocalDate patientBirthDate){
 		return patientDao.getPatientsByBirthDateList(patientBirthDate);
 	}
+
+	
 }
