@@ -3,6 +3,8 @@ plugins {
 	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
 	id 'java'
 	id "com.diffplug.eclipse.apt" version "3.29.1"
+	id 'com.google.cloud.tools.jib' version '3.0.0'
+	id "com.avast.gradle.docker-compose" version "0.14.3"
 }
 
 group = 'com.mediscreen'
@@ -40,10 +42,36 @@ dependencyManagement {
 	}
 }
 
+tasks {
+    build {
+        dependsOn(tasks.jib)
+    }
+}
+
 tasks.withType(JavaCompile) {
     options.compilerArgs = [
         '-Amapstruct.defaultComponentModel=spring'
     ]
+}
+
+jib {
+	from {
+		image = 'openjdk:14-alpine'	
+	}
+	to {
+		image = 'golowik/diabgnozscreen-patient-service-image'
+		auth {
+			username = 'golowik'
+			password = 'Morgane190813*'
+		}
+	}
+	container {
+		ports = ['8081']
+	}
+}
+
+dockerCompose {
+	useComposeFiles = ['docker-compose.yml']
 }
 
 test {

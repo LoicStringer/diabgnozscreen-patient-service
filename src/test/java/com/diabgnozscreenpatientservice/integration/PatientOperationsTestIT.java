@@ -56,7 +56,7 @@ class PatientOperationsTestIT {
 	}
 	
 	@Test
-	void addpatientTest() throws JsonProcessingException, Exception {
+	void addPatientTest() throws JsonProcessingException, Exception {
 		LocalDate birthDate = LocalDate.of(1981,8,8);
 		PatientDto patientToAdd = new PatientDto();
 		patientToAdd.setPatientId(6L);
@@ -70,8 +70,6 @@ class PatientOperationsTestIT {
 				.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$.patientLastName").value("Federer"));
-		
-		assertEquals("Federer", patientController.getOnePatient(6L).getBody().getPatientLastName());
 	}
 	
 	
@@ -104,16 +102,5 @@ class PatientOperationsTestIT {
 		.andExpect(status().isNotFound())
 		.andExpect(result -> assertTrue(result.getResolvedException() instanceof PatientNotFoundException));
 	}
-	
-	@Test
-	void isExpectedExceptionThrownWhenPatientIdIsNotCoherent() throws JsonProcessingException, Exception {
 		
-		PatientDto updatedPatient = patientController.getOnePatient(5L).getBody();
-		
-		mockMvc.perform(put("/diabgnoz/patients/4")
-				.content(objectMapper.writeValueAsString(updatedPatient))
-				.contentType(MediaType.APPLICATION_JSON))
-				.andExpect(result-> assertTrue(result.getResolvedException() instanceof PatientIdCoherenceException));
-	}
-	
 }

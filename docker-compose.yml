@@ -1,0 +1,15 @@
+version: "3.8"
+
+services:
+  
+  diabgnozscreen-ihm:
+    build: /home/newbie/git/diabgnozscreen-ihm
+    image: diabgnozscreen-ihm-image
+    ports:
+      - "4200:80"
+    
+  diabgnozscreen-patient-service:
+    image: golowik/diabgnozscreen-patient-service-image
+    network_mode: "host"
+
+    

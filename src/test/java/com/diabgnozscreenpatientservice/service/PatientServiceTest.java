@@ -104,11 +104,6 @@ class PatientServiceTest {
 			assertThrows(PatientNotFoundException.class, () -> patientService.getOnePatient(1L));
 		}
 		
-		@Test
-		void isExpectedExceptionThrownWhenPatientIdIsNotCoherentTest() throws PatientNotFoundException, PatientIdCoherenceException {
-			when(patientDao.updatePatient(any(Long.class), any(Patient.class))).thenThrow(PatientIdCoherenceException.class);
-			assertThrows(PatientIdCoherenceException.class, ()-> patientService.updatePatient(2L, testedPatient));
-		}
 	}
 
 	private static void initTestBeans() {
