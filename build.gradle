@@ -25,7 +25,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
-	
+	implementation 'org.springframework.boot:spring-boot-starter-log4j2'
 	implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
 	
 	implementation 'org.mapstruct:mapstruct:1.4.2.Final'
@@ -40,6 +40,13 @@ dependencyManagement {
 	imports {
 		mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
 	}
+}
+
+configurations {
+    all {
+        exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
+        exclude group: 'ch.qos.logback'
+    }
 }
 
 tasks {
@@ -74,6 +81,22 @@ dockerCompose {
 	useComposeFiles = ['docker-compose.yml']
 }
 
+
+jacoco {
+    toolVersion = "0.8.5"
+    reportsDir = file("build/jacoco")
+}
+
 test {
 	useJUnitPlatform()
+	finalizedBy jacocoTestReport
 }
+
+jacocoTestReport {
+    dependsOn test
+}
+
+
+
+
+
