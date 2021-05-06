@@ -20,7 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.diabgnozscreenpatientservice.controller.PatientController;
 import com.diabgnozscreenpatientservice.dto.PatientDto;
-import com.diabgnozscreenpatientservice.exception.PatientIdCoherenceException;
 import com.diabgnozscreenpatientservice.exception.PatientNotFoundException;
 import com.diabgnozscreenpatientservice.utility.PatientGenderEnum;
 import com.fasterxml.jackson.core.JsonProcessingException;

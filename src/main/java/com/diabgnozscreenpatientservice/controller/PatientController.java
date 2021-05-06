@@ -15,10 +15,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.diabgnozscreenpatientservice.dto.PatientDto;
-import com.diabgnozscreenpatientservice.exception.PatientIdCoherenceException;
 import com.diabgnozscreenpatientservice.exception.PatientNotFoundException;
 import com.diabgnozscreenpatientservice.mapper.PatientMapper;
 import com.diabgnozscreenpatientservice.model.Patient;
@@ -36,7 +36,7 @@ public class PatientController {
 	private PatientMapper patientMapper;
 	
 	@GetMapping("")
-	public ResponseEntity<Page<PatientDto>> getAllPatientsList (Pageable pageable){
+	public ResponseEntity<Page<PatientDto>> getAllPatientsList (@RequestParam(required=false)String patientLastName,Pageable pageable) throws PatientNotFoundException{
 		Page<PatientDto> allPatientDtosPage = 
 				patientService.getAllPatientsList(pageable).map(p->patientMapper.patientToPatientDto(p));
 		return ResponseEntity.ok(allPatientDtosPage);
@@ -57,19 +57,13 @@ public class PatientController {
 	}
 	
 	@PutMapping("/{patientId}")
-	public ResponseEntity<PatientDto> updatePatient(@PathVariable Long patientId, @Valid @RequestBody PatientDto updatedPatient) throws PatientNotFoundException, PatientIdCoherenceException{
+	public ResponseEntity<PatientDto> updatePatient(@PathVariable Long patientId, @Valid @RequestBody PatientDto updatedPatient) throws PatientNotFoundException{
 		Patient patientToUpdate = patientMapper.patientDtoToPatient(updatedPatient);
 		patientService.updatePatient(patientId, patientToUpdate);
 		return ResponseEntity.ok(updatedPatient);
 	}
 	
-	@GetMapping("/names/{patientLastName}")
-	public ResponseEntity<List<PatientDto>> getPatientsByName(@PathVariable String patientLastName){
-		List<PatientDto> patientDtosByNameList = 
-				patientMapper.patientsListToPatientDtosList(patientService.getPatientsByNameList(patientLastName));
-		return ResponseEntity.ok(patientDtosByNameList);
-	}
-	
+
 }
 
 

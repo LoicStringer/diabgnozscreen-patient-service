@@ -24,7 +24,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 
 import com.diabgnozscreenpatientservice.dto.PatientDto;
-import com.diabgnozscreenpatientservice.exception.PatientIdCoherenceException;
 import com.diabgnozscreenpatientservice.exception.PatientNotFoundException;
 import com.diabgnozscreenpatientservice.mapper.PatientMapper;
 import com.diabgnozscreenpatientservice.model.Patient;
@@ -78,12 +77,12 @@ public class PatientControllerTest {
 	class NominalCasesTests {
 		
 		@Test
-		void getAllPatientsPageTest() {
+		void getAllPatientsPageTest() throws PatientNotFoundException {
 			when(patientService.getAllPatientsList(testedPageable)).thenReturn(testedPatientsPage);
 			when(patientMapper.patientToPatientDto(testedPatient)).thenReturn(testedPatientDto);
 			when(patientMapper.patientToPatientDto(testedPatientTwo)).thenReturn(testedPatientDtoTwo);
 			when(patientMapper.patientToPatientDto(testedPatientThree)).thenReturn(testedPatientDtoThree);
-			assertEquals(ResponseEntity.ok(testedPatientDtosPage), patientController.getAllPatientsList(testedPageable));
+			assertEquals(ResponseEntity.ok(testedPatientDtosPage), patientController.getAllPatientsList(null,testedPageable));
 		}
 		
 		@Test
@@ -101,18 +100,12 @@ public class PatientControllerTest {
 		}
 		
 		@Test 
-		void updatePatient() throws PatientNotFoundException, PatientIdCoherenceException {
+		void updatePatient() throws PatientNotFoundException{
 			when(patientService.updatePatient(any(Long.class), any(Patient.class))).thenReturn(testedPatient);
 			when(patientMapper.patientDtoToPatient(testedPatientDto)).thenReturn(testedPatient);
 			assertEquals(ResponseEntity.ok(testedPatientDto),patientController.updatePatient(1L, testedPatientDto));
 		}
 		
-		@Test
-		void getPatientsByNameListTest() {
-			when(patientService.getPatientsByNameList(any(String.class))).thenReturn(homonymousPatientsList);
-			when(patientMapper.patientsListToPatientDtosList(homonymousPatientsList)).thenReturn(homonymousPatientsListDto);
-			assertEquals(ResponseEntity.ok(homonymousPatientsListDto),patientController.getPatientsByName("Johnson"));
-		}
 	}
 	
 	@Nested
@@ -126,12 +119,6 @@ public class PatientControllerTest {
 			assertThrows(PatientNotFoundException.class, ()->patientController.getOnePatient(1L));
 		}
 		
-		@Test
-		void isExpectedExceptionThrownWHenPatientIdIsNotCoherentTest() throws PatientNotFoundException, PatientIdCoherenceException {
-			when(patientService.updatePatient(2L, testedPatient)).thenThrow(PatientIdCoherenceException.class);
-			when(patientMapper.patientDtoToPatient(testedPatientDto)).thenReturn(testedPatient);
-			assertThrows(PatientIdCoherenceException.class, ()->patientController.updatePatient(2L, testedPatientDto));
-		}
 	}
 
 	private static void initTestDtoBeans() {
