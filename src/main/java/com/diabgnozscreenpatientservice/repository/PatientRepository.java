@@ -1,14 +1,14 @@
 package com.diabgnozscreenpatientservice.repository;
 
-import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
 import com.diabgnozscreenpatientservice.entity.PatientEntity;
 
-public interface PatientRepository extends JpaRepository<PatientEntity, Long> {
+public interface PatientRepository extends JpaRepository<PatientEntity, Long>, JpaSpecificationExecutor<PatientEntity>{
 
-	List<PatientEntity> findByPatientLastName(String patientLastName);
-	List<PatientEntity> findByPatientBirthDate(LocalDate patientBirthDate);
+	boolean existsByPatientLastName(String patientLastName);
+	
  }

@@ -23,7 +23,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
 import com.diabgnozscreenpatientservice.dao.PatientDao;
-import com.diabgnozscreenpatientservice.exception.PatientIdCoherenceException;
 import com.diabgnozscreenpatientservice.exception.PatientNotFoundException;
 import com.diabgnozscreenpatientservice.model.Patient;
 
@@ -81,16 +80,11 @@ class PatientServiceTest {
 		}
 		
 		@Test
-		void updatePatientTest() throws PatientNotFoundException, PatientIdCoherenceException {
+		void updatePatientTest() throws PatientNotFoundException{
 			when(patientDao.updatePatient(any(Long.class), any(Patient.class))).thenReturn(testedPatient);
 			assertEquals("Smith", patientService.updatePatient(1L, testedPatient).getPatientLastName());
 		}
 
-		@Test
-		void getPatientsByNameListTest() {
-			when(patientDao.getPatientsByNameList(any(String.class))).thenReturn(homonymousPatientsList);
-			assertEquals(2, patientService.getPatientsByNameList("Johnson").size());
-		}
 	}
 
 	@Nested
