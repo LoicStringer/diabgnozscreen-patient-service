@@ -12,4 +12,6 @@ services:
     image: golowik/diabgnozscreen-patient-service-image
     network_mode: "host"
 
-    
+  diabgnozscreen-notes-service:
+    image: golowik/diabgnozscreen-patient-service-image
+    network_mode: "host"

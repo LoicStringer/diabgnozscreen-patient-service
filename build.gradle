@@ -2,6 +2,7 @@ plugins {
 	id 'org.springframework.boot' version '2.4.4'
 	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
 	id 'java'
+	id 'jacoco'
 	id "com.diffplug.eclipse.apt" version "3.29.1"
 	id 'com.google.cloud.tools.jib' version '3.0.0'
 	id "com.avast.gradle.docker-compose" version "0.14.3"
@@ -23,6 +24,7 @@ ext {
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	annotationProcessor 'org.hibernate:hibernate-jpamodelgen'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	implementation 'org.springframework.boot:spring-boot-starter-log4j2'
@@ -46,12 +48,6 @@ configurations {
     all {
         exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
         exclude group: 'ch.qos.logback'
-    }
-}
-
-tasks {
-    build {
-        dependsOn(tasks.jib)
     }
 }
 
@@ -80,7 +76,6 @@ jib {
 dockerCompose {
 	useComposeFiles = ['docker-compose.yml']
 }
-
 
 jacoco {
     toolVersion = "0.8.5"

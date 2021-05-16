@@ -24,6 +24,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 
 import com.diabgnozscreenpatientservice.dto.PatientDto;
+import com.diabgnozscreenpatientservice.exception.PatientIdMismatchException;
+import com.diabgnozscreenpatientservice.exception.PatientIdSettingNotAllowedException;
 import com.diabgnozscreenpatientservice.exception.PatientNotFoundException;
 import com.diabgnozscreenpatientservice.mapper.PatientMapper;
 import com.diabgnozscreenpatientservice.model.Patient;
@@ -78,7 +80,7 @@ public class PatientControllerTest {
 		
 		@Test
 		void getAllPatientsPageTest() throws PatientNotFoundException {
-			when(patientService.getAllPatientsList(testedPageable)).thenReturn(testedPatientsPage);
+			when(patientService.getAllPatientsList(null,testedPageable)).thenReturn(testedPatientsPage);
 			when(patientMapper.patientToPatientDto(testedPatient)).thenReturn(testedPatientDto);
 			when(patientMapper.patientToPatientDto(testedPatientTwo)).thenReturn(testedPatientDtoTwo);
 			when(patientMapper.patientToPatientDto(testedPatientThree)).thenReturn(testedPatientDtoThree);
@@ -93,14 +95,14 @@ public class PatientControllerTest {
 		}
 		
 		@Test
-		void addPatientTest() {
+		void addPatientTest() throws PatientIdSettingNotAllowedException {
 			when(patientService.addPatient(testedPatient)).thenReturn(testedPatient);
 			when(patientMapper.patientDtoToPatient(testedPatientDto)).thenReturn(testedPatient);
 			assertEquals(ResponseEntity.ok(testedPatientDto),patientController.addPatient(testedPatientDto));
 		}
 		
 		@Test 
-		void updatePatient() throws PatientNotFoundException{
+		void updatePatient() throws PatientNotFoundException, PatientIdMismatchException{
 			when(patientService.updatePatient(any(Long.class), any(Patient.class))).thenReturn(testedPatient);
 			when(patientMapper.patientDtoToPatient(testedPatientDto)).thenReturn(testedPatient);
 			assertEquals(ResponseEntity.ok(testedPatientDto),patientController.updatePatient(1L, testedPatientDto));
@@ -119,6 +121,20 @@ public class PatientControllerTest {
 			assertThrows(PatientNotFoundException.class, ()->patientController.getOnePatient(1L));
 		}
 		
+		@Test
+		void isExpectedExceptionThrownWhenatientIdMismatchTest() throws PatientNotFoundException, PatientIdMismatchException{
+			when(patientService.updatePatient(1L, testedPatient)).thenThrow(PatientIdMismatchException.class);
+			when(patientMapper.patientDtoToPatient(testedPatientDto)).thenReturn(testedPatient);
+			assertThrows(PatientIdMismatchException.class, ()-> patientController.updatePatient(1L, testedPatientDto));
+		}
+		
+		@Test
+		void isExpectedExceptionThrownWHenPatientIdSetBeforeCreateTest() throws PatientIdSettingNotAllowedException {
+			when(patientService.addPatient(testedPatient)).thenThrow(PatientIdSettingNotAllowedException.class);
+			when(patientMapper.patientDtoToPatient(testedPatientDto)).thenReturn(testedPatient);
+			assertThrows(PatientIdSettingNotAllowedException.class, ()-> patientController.addPatient(testedPatientDto));
+			
+		}
 	}
 
 	private static void initTestDtoBeans() {
