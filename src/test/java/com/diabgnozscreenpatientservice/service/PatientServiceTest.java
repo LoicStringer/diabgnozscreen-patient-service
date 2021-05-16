@@ -23,6 +23,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
 import com.diabgnozscreenpatientservice.dao.PatientDao;
+import com.diabgnozscreenpatientservice.exception.PatientIdMismatchException;
+import com.diabgnozscreenpatientservice.exception.PatientIdSettingNotAllowedException;
 import com.diabgnozscreenpatientservice.exception.PatientNotFoundException;
 import com.diabgnozscreenpatientservice.model.Patient;
 
@@ -62,9 +64,9 @@ class PatientServiceTest {
 	class NominalCasesTests {
 
 		@Test
-		void getAllPatientsPageTest() {
-			when(patientDao.getAllPatientsList(testedPageable)).thenReturn(testedPatientsPage);
-			assertEquals(testedPatientsPage, patientService.getAllPatientsList(testedPageable));
+		void getAllPatientsPageTest() throws PatientNotFoundException {
+			when(patientDao.getAllPatientsList(null,testedPageable)).thenReturn(testedPatientsPage);
+			assertEquals(testedPatientsPage, patientService.getAllPatientsList(null,testedPageable));
 		}
 
 		@Test
@@ -74,13 +76,13 @@ class PatientServiceTest {
 		}
 
 		@Test
-		void addPatientTest() {
+		void addPatientTest() throws PatientIdSettingNotAllowedException {
 			when(patientDao.addPatient(testedPatient)).thenReturn(testedPatient);
 			assertEquals("Smith", patientService.addPatient(testedPatient).getPatientLastName());
 		}
 		
 		@Test
-		void updatePatientTest() throws PatientNotFoundException{
+		void updatePatientTest() throws PatientNotFoundException, PatientIdMismatchException{
 			when(patientDao.updatePatient(any(Long.class), any(Patient.class))).thenReturn(testedPatient);
 			assertEquals("Smith", patientService.updatePatient(1L, testedPatient).getPatientLastName());
 		}
@@ -93,11 +95,22 @@ class PatientServiceTest {
 	class ExceptionsTests {
 
 		@Test
-		void isexpectedExceptionThrownWhenPatientIsNotFoundTest() throws PatientNotFoundException {
+		void isExpectedExceptionThrownWhenPatientIsNotFoundTest() throws PatientNotFoundException {
 			when(patientDao.getOnePatient(any(Long.class))).thenThrow(PatientNotFoundException.class);
 			assertThrows(PatientNotFoundException.class, () -> patientService.getOnePatient(1L));
 		}
 		
+		@Test
+		void isExpectedExceptionThrownWhenPatientIdMismatchTest() throws PatientNotFoundException, PatientIdMismatchException {
+			when(patientDao.updatePatient(any(Long.class), any(Patient.class))).thenThrow(PatientIdMismatchException.class);
+			assertThrows(PatientIdMismatchException.class, ()->patientService.updatePatient(1L, testedPatient));
+		}
+		
+		@Test
+		void isExpectedExceptionThrownWhenPatientIdSetBeforeCreateTest() throws PatientIdSettingNotAllowedException {
+			when(patientDao.addPatient(testedPatient)).thenThrow(PatientIdSettingNotAllowedException.class);
+			assertThrows(PatientIdSettingNotAllowedException.class, ()-> patientService.addPatient(testedPatient));
+		}
 	}
 
 	private static void initTestBeans() {

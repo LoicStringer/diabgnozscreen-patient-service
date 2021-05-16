@@ -1,13 +1,12 @@
 package com.diabgnozscreenpatientservice.controller;
 
-import java.util.List;
-
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,6 +18,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.diabgnozscreenpatientservice.dto.PatientDto;
+import com.diabgnozscreenpatientservice.exception.PatientIdMismatchException;
+import com.diabgnozscreenpatientservice.exception.PatientIdSettingNotAllowedException;
 import com.diabgnozscreenpatientservice.exception.PatientNotFoundException;
 import com.diabgnozscreenpatientservice.mapper.PatientMapper;
 import com.diabgnozscreenpatientservice.model.Patient;
@@ -36,9 +37,9 @@ public class PatientController {
 	private PatientMapper patientMapper;
 	
 	@GetMapping("")
-	public ResponseEntity<Page<PatientDto>> getAllPatientsList (@RequestParam(required=false)String patientLastName,Pageable pageable) throws PatientNotFoundException{
+	public ResponseEntity<Page<PatientDto>> getAllPatientsList (@RequestParam(required=false) @Nullable String patientLastName,Pageable pageable) throws PatientNotFoundException{
 		Page<PatientDto> allPatientDtosPage = 
-				patientService.getAllPatientsList(pageable).map(p->patientMapper.patientToPatientDto(p));
+				patientService.getAllPatientsList(patientLastName,pageable).map(p->patientMapper.patientToPatientDto(p));
 		return ResponseEntity.ok(allPatientDtosPage);
 	}
 
@@ -50,14 +51,14 @@ public class PatientController {
 	}
 	
 	@PostMapping("")
-	public ResponseEntity<PatientDto> addPatient(@RequestBody PatientDto patientToAdd){
+	public ResponseEntity<PatientDto> addPatient(@RequestBody PatientDto patientToAdd) throws PatientIdSettingNotAllowedException{
 		Patient patientToSave = patientMapper.patientDtoToPatient(patientToAdd);
 		patientService.addPatient(patientToSave);
 		return ResponseEntity.ok(patientToAdd);
 	}
 	
 	@PutMapping("/{patientId}")
-	public ResponseEntity<PatientDto> updatePatient(@PathVariable Long patientId, @Valid @RequestBody PatientDto updatedPatient) throws PatientNotFoundException{
+	public ResponseEntity<PatientDto> updatePatient(@PathVariable Long patientId, @Valid @RequestBody PatientDto updatedPatient) throws PatientNotFoundException, PatientIdMismatchException{
 		Patient patientToUpdate = patientMapper.patientDtoToPatient(updatedPatient);
 		patientService.updatePatient(patientId, patientToUpdate);
 		return ResponseEntity.ok(updatedPatient);
