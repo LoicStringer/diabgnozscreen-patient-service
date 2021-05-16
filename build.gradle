@@ -63,10 +63,7 @@ jib {
 	}
 	to {
 		image = 'golowik/diabgnozscreen-patient-service-image'
-		auth {
-			username = 'golowik'
-			password = 'Morgane190813*'
-		}
+		credHelper = 'pass'
 	}
 	container {
 		ports = ['8081']
