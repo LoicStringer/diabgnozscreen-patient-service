@@ -60,9 +60,10 @@ tasks.withType(JavaCompile) {
 jib {
 	from {
 		image = 'openjdk:14-alpine'	
+		credHelper = 'pass'
 	}
 	to {
-		image = 'golowik/diabgnozscreen-patient-service-image'
+		image = 'loicstringer/diabgnozscreen-patient-service-image'
 		credHelper = 'pass'
 	}
 	container {
