@@ -46,7 +46,6 @@ public class ExceptionsHandlerCenter  extends ResponseEntityExceptionHandler{
 		return new ResponseEntity<ExceptionResponse>(exceptionResponse, getHttpStatusFromException(ex));
 	}
 	
-	
 	private ExceptionResponse exceptionResponseBuild(Exception ex) {
 		String statusCode = getStatusCodeFromException(ex);
 		String exceptionMessage = getReasonFromExceptionResponseStatus(ex);

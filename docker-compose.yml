@@ -8,10 +8,17 @@ services:
     ports:
       - "4200:80"
     
+  diabgnozscreen-report-service:
+    image: loicstringer/diabgnozscreen-report-service-image
+    network_mode: "host"
+    
   diabgnozscreen-patient-service:
-    image: golowik/diabgnozscreen-patient-service-image
+    image: loicstringer/diabgnozscreen-patient-service-image
     network_mode: "host"
 
   diabgnozscreen-notes-service:
-    image: golowik/diabgnozscreen-patient-service-image
+    image: loicstringer/diabgnozscreen-notes-service-image
     network_mode: "host"
+      
+
+    

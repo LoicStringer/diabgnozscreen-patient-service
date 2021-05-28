@@ -80,7 +80,7 @@ class PatientOperationsTestIT {
 
 			assertEquals("Jordan", 
 					patientController.getAllPatientsList("Jordan", 
-							PageRequest.of(0, 1)).getBody().getContent().get(0).getPatientLastName());
+							PageRequest.of(0, 1)).getBody().getContent().get(0).getPatientLastName());					
 		}
 
 		@Test
@@ -108,7 +108,7 @@ class PatientOperationsTestIT {
 			mockMvc.perform(get("/diabgnoz/patients/10")).andExpect(status().isNotFound())
 					.andExpect(result -> assertTrue(result.getResolvedException() instanceof PatientNotFoundException));
 		}
-
+		
 		@Test
 		void isExpectedExceptionThrownWhenPatientIdMismatchTest() throws Exception {
 			PatientDto updatedPatient = patientController.getOnePatient(4L).getBody();
