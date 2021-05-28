@@ -64,6 +64,10 @@ public class PatientController {
 		return ResponseEntity.ok(updatedPatient);
 	}
 	
+	@GetMapping("/test")
+	public String test() {
+		return "Hello";
+	}
 
 }
 

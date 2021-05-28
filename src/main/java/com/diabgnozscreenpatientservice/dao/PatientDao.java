@@ -27,7 +27,7 @@ public class PatientDao {
 
 	public Page<Patient> getAllPatientsList(@Nullable String patientLastName, Pageable pageable)
 			throws PatientNotFoundException {
-		checkPatientLastName(patientLastName);
+		
 		Page<PatientEntity> allPatientEntitiesPage = patientRepository.findAll(nameLike(patientLastName), pageable);
 		Page<Patient> allPatientsPage = allPatientEntitiesPage.map(p -> patientMapper.patientEntityToPatient(p));
 		return allPatientsPage;
@@ -54,11 +54,6 @@ public class PatientDao {
 
 	private void checkPatientId(Long patientId) throws PatientNotFoundException {
 		if (!patientRepository.existsById(patientId))
-			throw new PatientNotFoundException();
-	}
-
-	private void checkPatientLastName(String patientLastName) throws PatientNotFoundException {
-		if (!patientLastName.isEmpty() && !patientRepository.existsByPatientLastName(patientLastName))
 			throw new PatientNotFoundException();
 	}
 
